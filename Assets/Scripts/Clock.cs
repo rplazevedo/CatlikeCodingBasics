@@ -6,9 +6,6 @@ public class Clock : MonoBehaviour
     const float hoursToDegrees = -30f;
     const float minutesToDegrees = -6f;
     const float secondsToDegrees = -6f;
-    const float secondsToMinuteDegrees = -0.1f;
-    const float secondsToHourDegrees = -0.001666f;
-    const float minutesToHourDegrees = -0.5f;
 
 
 
@@ -22,13 +19,14 @@ public class Clock : MonoBehaviour
 
     private void UpdateArms()
     {
-        var currentTime = DateTime.Now;
-        int hour = currentTime.Hour;
-        int minute = currentTime.Minute;
-        int second = currentTime.Second;
+        TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
-        float hoursAngle = hoursToDegrees * hour + minutesToHourDegrees * minute + secondsToHourDegrees * second;
-        float minutesAngle = minutesToDegrees * minute + secondsToMinuteDegrees * second;
+        float hour = (float)currentTime.TotalHours;
+        float minute = (float)currentTime.TotalMinutes;
+        float second = (float)currentTime.Seconds;
+
+        float hoursAngle = hoursToDegrees * hour;
+        float minutesAngle = minutesToDegrees * minute;
         float secondsAngle = secondsToDegrees * second;
 
         hoursPivot.localRotation = RotateClockArm(hoursAngle);
