@@ -33,12 +33,15 @@ public class Graph : MonoBehaviour
     }
 
     private void Update()
-    {
+    {            
+        float time = Time.time;
         for (int i = 0; i < points.Length; i++)
         {
             Transform point = points[i];
             Vector3 position = point.localPosition;
-            position.y = position.x * position.x * position.x;
+            position.y = Mathf.Sin(Mathf.PI * (position.x + time));
+            point.localPosition = position;
+            point.SetParent(transform, false);
         }
     }
 }
