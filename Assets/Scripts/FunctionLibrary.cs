@@ -1,25 +1,13 @@
-using UnityEngine;
-using static FunctionLibrary;
-using UnityEngine.UIElements;
 using static UnityEngine.Mathf;
 public static class FunctionLibrary
 {
     public delegate float Function(float x, float t);
 
+    static Function[] functions = {Wave, MultiWave, Ripple};
+
     public static Function GetFunction (int index)
     {
-        if (index == 0)
-        {
-            return Wave;
-        }
-        else if (index == 1)
-        {
-            return MultiWave;
-        }
-        else
-        {
-            return Ripple;
-        }
+        return functions[index];
     }
     public static float Wave (float x, float t)
     {
