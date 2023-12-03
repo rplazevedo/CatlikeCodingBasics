@@ -5,9 +5,11 @@ public static class FunctionLibrary
 
     static Function[] functions = {Wave, MultiWave, Ripple};
 
-    public static Function GetFunction (int index)
+    public enum FunctionName { Wave, MultiWave, Ripple };
+
+    public static Function GetFunction (FunctionName name)
     {
-        return functions[index];
+        return functions[(int)name];
     }
     public static float Wave (float x, float t)
     {
