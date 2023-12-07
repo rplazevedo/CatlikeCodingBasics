@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using static UnityEngine.Mathf;
 public static class FunctionLibrary
@@ -46,11 +47,12 @@ public static class FunctionLibrary
 
     public static Vector3 Sphere(float u, float v, float t)
     {
-        float r = Cos(0.5f * PI * v);
+        float r = 0.9f + 0.1f * Sin(PI * (6f * u + 4f * v + t));
+        float s = r * Cos(0.5f * PI * v);
         Vector3 p;
-        p.x = r *Sin(PI * u + t);
-        p.y = Sin(0.5f * PI * v);
-        p.z = r* Cos(PI * u + t);
+        p.x = s * Sin(PI * u + t);
+        p.y = r * Sin(0.5f * PI * v);
+        p.z = s * Cos(PI * u + t);
         return p;
     }
 }
