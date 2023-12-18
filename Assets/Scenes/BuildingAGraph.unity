@@ -287,6 +287,8 @@ MonoBehaviour:
 
     000
 
+    000
+
     000'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -377,6 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   display: {fileID: 844262094}
+  displayMode: 0
   sampleDuration: 1
 --- !u!1 &1036217514
 GameObject:
@@ -672,6 +675,8 @@ MonoBehaviour:
   pointPrefab: {fileID: 665396689934861156, guid: 699448798e0d05a499fb02b8c8581a5f, type: 3}
   resolution: 100
   function: 4
+  transitionMode: 1
+  functionDuration: 1
 --- !u!4 &1668223564
 Transform:
   m_ObjectHideFlags: 0
