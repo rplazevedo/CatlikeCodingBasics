@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class GPUGraph : MonoBehaviour
 {
+    [SerializeField] ComputeShader computeShader;
+
+
     [SerializeField, Range(10,200)] int resolution = 10;
 
     [SerializeField] FunctionLibrary.FunctionName function;
