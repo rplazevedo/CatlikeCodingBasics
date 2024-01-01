@@ -4,10 +4,15 @@ public class GPUGraph : MonoBehaviour
 {
     [SerializeField] ComputeShader computeShader;
 
-
     [SerializeField, Range(10,200)] int resolution = 10;
 
     [SerializeField] FunctionLibrary.FunctionName function;
+
+    static readonly int
+        positionsId = Shader.PropertyToID("_Positions"),
+        resiolutionId = Shader.PropertyToID("_Resolution"),
+        stepId = Shader.PropertyToID("_Step"),
+        timeId = Shader.PropertyToID("_Time");
 
     public enum TransitionMode { Cycle, Random }
 
@@ -51,6 +56,8 @@ public class GPUGraph : MonoBehaviour
             transitioning = true;
             transitionFunction = function;
             PickNextFunction();
+
+        UpdateFunctionOnGPU();
         }
     }
 
@@ -60,5 +67,18 @@ public class GPUGraph : MonoBehaviour
         function = transitionMode == TransitionMode.Cycle ?
             FunctionLibrary.GetNextFunctionName(function) :
             FunctionLibrary.GetRandomFunctionNameOtherThan(function);
+    }
+
+    void UpdateFunctionOnGPU ()
+    {
+        float step = 2f / resolution;
+        computeShader.SetInt(resiolutionId, resolution);
+        computeShader.SetFloat(stepId, step);
+        computeShader.SetFloat(timeId, Time.time);
+
+        computeShader.SetBuffer(0, positionsId, positionsBuffer);
+
+        int groups = Mathf.CeilToInt(resolution / 8f);
+        computeShader.Dispatch(0, groups, groups, 1);
     }
 }
