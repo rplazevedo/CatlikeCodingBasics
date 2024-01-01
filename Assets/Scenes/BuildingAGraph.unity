@@ -486,11 +486,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2051dde774c5ef34093f8d7a43d8e274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: c15911e53b453284898ac1c9a6c0d23a, type: 3}
   resolution: 200
   function: 0
   transitionMode: 0
   functionDuration: 1
   transitionDuration: 1
+  material: {fileID: 2100000, guid: 294242afb2c50384598f2e57da217723, type: 2}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1214412785
 Transform:
   m_ObjectHideFlags: 0

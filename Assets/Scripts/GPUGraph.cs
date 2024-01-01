@@ -28,6 +28,9 @@ public class GPUGraph : MonoBehaviour
 
     ComputeBuffer positionsBuffer;
 
+    [SerializeField] Material material;
+    [SerializeField] Mesh mesh;
+
     private void OnEnable()
     {
         positionsBuffer = new ComputeBuffer(resolution * resolution, 3 * 4);
