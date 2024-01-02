@@ -20,8 +20,7 @@ void SetPosition (uint3 id, float3 position) {
 		}	
 	}
 
-float3 Wave (float u, float v, float t)
-    {
+float3 Wave (float u, float v, float t) {
         float3 p;
         p.x = u;
         p.y = sin(PI * (u + v + t));
