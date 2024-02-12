@@ -1,4 +1,4 @@
-Shader "Graph/Point Surface" {
+Shader "Graph/PointSurface" {
 
 	Properties {
 		_Smoothness ("Smoothness", Range(0,1) ) = 0.5	
