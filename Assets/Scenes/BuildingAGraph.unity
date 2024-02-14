@@ -490,7 +490,7 @@ MonoBehaviour:
   resolution: 200
   function: 0
   transitionMode: 0
-  functionDuration: 300
+  functionDuration: 1
   transitionDuration: 1
   material: {fileID: 2100000, guid: 0917e13d36337484abebaa38a7b262f2, type: 2}
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}

@@ -59,9 +59,8 @@ public class GPUGraph : MonoBehaviour
             transitioning = true;
             transitionFunction = function;
             PickNextFunction();
-
-        UpdateFunctionOnGPU();
         }
+        UpdateFunctionOnGPU();
     }
 
 
