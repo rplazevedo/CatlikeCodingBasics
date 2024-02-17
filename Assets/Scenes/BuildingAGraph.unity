@@ -492,7 +492,7 @@ MonoBehaviour:
   transitionMode: 0
   functionDuration: 1
   transitionDuration: 1
-  material: {fileID: 2100000, guid: 0917e13d36337484abebaa38a7b262f2, type: 2}
+  material: {fileID: 2100000, guid: 2c37baf1ea0c938429166584a17e53d8, type: 2}
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1214412785
 Transform:
