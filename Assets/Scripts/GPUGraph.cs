@@ -79,10 +79,11 @@ public class GPUGraph : MonoBehaviour
         computeShader.SetFloat(stepId, step);
         computeShader.SetFloat(timeId, Time.time);
 
-        computeShader.SetBuffer(0, positionsId, positionsBuffer);
+        var kernelIndex = (int)function;
+        computeShader.SetBuffer(kernelIndex, positionsId, positionsBuffer);
 
         int groups = Mathf.CeilToInt(resolution / 8f);
-        computeShader.Dispatch(0, groups, groups, 1);
+        computeShader.Dispatch(kernelIndex, groups, groups, 1);
 
         material.SetBuffer(positionsId, positionsBuffer);
         material.SetFloat(stepId, step);
@@ -90,7 +91,7 @@ public class GPUGraph : MonoBehaviour
         // deprecated
         Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, resolution * resolution);
 
-        // new equivalent
+        // new equivalent (not tested yet)
         //RenderParams renderParams = new RenderParams(material);
         //renderParams.worldBounds = bounds;
         //Graphics.RenderMeshPrimitives(renderParams, mesh, 0, positionsBuffer.count);
