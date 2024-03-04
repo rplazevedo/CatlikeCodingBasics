@@ -980,7 +980,7 @@ GameObject:
   - component: {fileID: 1799323028}
   - component: {fileID: 1799323025}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Fractal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -998,7 +998,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae7fd5fd2b61e141af8d076399a1cd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  depth: 6
+  depth: 4
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: d4814de2a1d7e104d8af4aa718bcde11, type: 2}
 --- !u!4 &1799323028

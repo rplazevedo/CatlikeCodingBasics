@@ -1,5 +1,6 @@
 
 using System.Xml.Serialization;
+using UnityEditor;
 using UnityEngine;
 
 public class Fractal : MonoBehaviour
@@ -20,14 +21,41 @@ public class Fractal : MonoBehaviour
         Quaternion.Euler(90f, 0f, 0f), Quaternion.Euler(-90f, 0f, 0f),
     };
 
-    private void Awake()
+    struct FractalPart
     {
-        CreatePart();
+        public Vector3 direction;
+        public Quaternion rotation;
+        public Transform transform;
     }
 
-    void CreatePart()
+    FractalPart[][] parts;
+
+    private void Awake()
     {
-        var go = new GameObject("Fractal Part");
+        parts = new FractalPart[depth][];
+        for (int i = 0, length = 1; i < parts.Length; i++, length *= 5) 
+        {
+            parts[i] = new FractalPart[length];
+        }
+
+        float scale = 1f;
+        CreatePart(0, 0, scale);
+        for (int li = 1; li < parts.Length; li++)
+        {
+            scale *= 0.5f;
+            FractalPart[] levelParts = parts[li];
+            for (int fpi = 0; fpi < levelParts.Length; fpi += 5)
+                for (int ci = 0; ci < 5; ci++)
+                {  
+                    CreatePart(li, ci, scale);
+                }
+        }
+    }
+
+    void CreatePart(int levelIndex, int childIndex, float scale)
+    {
+        var go = new GameObject("Fractal Part L" + levelIndex + " C" + childIndex);
+        go.transform.localScale = scale * Vector3.one;
         go.transform.SetParent(transform, false);
         go.AddComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshRenderer>().material = material;
