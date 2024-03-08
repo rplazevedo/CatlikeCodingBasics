@@ -2,6 +2,7 @@
 using System.Xml.Serialization;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Fractal : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class Fractal : MonoBehaviour
         }
 
         float scale = 1f;
-        CreatePart(0, 0, scale);
+        parts[0][0] = CreatePart(0, 0, scale);
         for (int li = 1; li < parts.Length; li++)
         {
             scale *= 0.5f;
@@ -47,17 +48,44 @@ public class Fractal : MonoBehaviour
             for (int fpi = 0; fpi < levelParts.Length; fpi += 5)
                 for (int ci = 0; ci < 5; ci++)
                 {  
-                    CreatePart(li, ci, scale);
+                    levelParts[fpi + ci] = CreatePart(li, ci, scale);
                 }
         }
     }
 
-    void CreatePart(int levelIndex, int childIndex, float scale)
+    FractalPart CreatePart(int levelIndex, int childIndex, float scale)
     {
         var go = new GameObject("Fractal Part L" + levelIndex + " C" + childIndex);
         go.transform.localScale = scale * Vector3.one;
         go.transform.SetParent(transform, false);
         go.AddComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshRenderer>().material = material;
+
+        return new FractalPart
+        {
+            direction = directions[childIndex],
+            rotation = rotations[childIndex],
+            transform = go.transform,
+        };
+    }
+
+    public void Update()
+    {
+        for (int li = 1; li < parts.Length; li++)
+        {
+            FractalPart[] parentParts = parts[li - 1];
+            FractalPart[] levelParts = parts[li];
+            for (int fpi = 0; fpi < levelParts.Length; fpi++)
+            {
+                Transform parentTransform = parentParts[fpi / 5].transform;
+                FractalPart part = levelParts[fpi];
+                part.transform.localRotation = 
+                    parentTransform.localRotation * part.rotation;
+                part.transform.localPosition =
+                    parentTransform.localPosition +
+                    parentTransform.localRotation *
+                    (1.5f * part.transform.localScale.x * part.direction);
+            }
+        }
     }
 }
