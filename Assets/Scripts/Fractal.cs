@@ -86,16 +86,14 @@ public class Fractal : MonoBehaviour
             {
                 Transform parentTransform = parentParts[fpi / 5].transform;
                 FractalPart part = levelParts[fpi];
+                part.rotation *= deltaRotation;
                 part.transform.localRotation = 
                     parentTransform.localRotation * part.rotation;
                 part.transform.localPosition =
                     parentTransform.localPosition +
                     parentTransform.localRotation *
                     (1.5f * part.transform.localScale.x * part.direction);
-                part.rotation *= deltaRotation;
-                part.transform.localRotation = parentTransform.localRotation * part.rotation;
                 levelParts[fpi] = part;
-
             }
         }
     }
