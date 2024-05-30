@@ -1,6 +1,7 @@
 
 using System.Xml.Serialization;
 using UnityEditor;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -28,6 +29,7 @@ public class Fractal : MonoBehaviour
         public Quaternion rotation;
         public Vector3 worldPosition;
         public Quaternion worldRotation;
+        public float spinAngle;
     }
 
     FractalPart[][] parts;
@@ -64,11 +66,11 @@ public class Fractal : MonoBehaviour
 
     public void Update()
     {
-        Quaternion deltaRotation = Quaternion.Euler(0f, 22.5f * Time.deltaTime, 0f);
+        float spingAngleDelta = 22.5f * Time.deltaTime;
 
         FractalPart rootPart = parts[0][0];
-        rootPart.rotation *= deltaRotation;
-        rootPart.worldRotation = rootPart.rotation;
+        rootPart.spinAngle += spingAngleDelta;
+        rootPart.worldRotation = rootPart.rotation * Quaternion.Euler(0f, rootPart.spinAngle, 0f);
         parts[0][0] = rootPart;
         matrices[0][0] = Matrix4x4.TRS(rootPart.worldPosition, rootPart.worldRotation, Vector3.one);
 
@@ -83,9 +85,9 @@ public class Fractal : MonoBehaviour
             {
                 FractalPart parent = levelParts[fpi / 5];
                 FractalPart part = levelParts[fpi];
-                part.rotation *= deltaRotation;
+                part.spinAngle += spingAngleDelta;
                 part.worldRotation = 
-                    parent.worldRotation * part.rotation;
+                    parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
                 part.worldPosition =
                     parent.worldPosition +
                     parent.worldRotation *
