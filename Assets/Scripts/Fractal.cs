@@ -34,15 +34,19 @@ public class Fractal : MonoBehaviour
 
     FractalPart[][] parts;
     Matrix4x4[][] matrices;
+    ComputeBuffer[] matricesBuffers;
 
-    private void Awake()
+    private void OnEnable()
     {
         parts = new FractalPart[depth][];
         matrices = new Matrix4x4[depth][];
+        matricesBuffers = new ComputeBuffer[depth];
+        int stride = 16 * 4;
         for (int i = 0, length = 1; i < parts.Length; i++, length *= 5) 
         {
             parts[i] = new FractalPart[length];
             matrices[i] = new Matrix4x4[length];
+            matricesBuffers[i] = new ComputeBuffer(length, stride);
         }
 
         parts[0][0] = CreatePart(0);
@@ -54,6 +58,26 @@ public class Fractal : MonoBehaviour
                 {  
                     levelParts[fpi + ci] = CreatePart(ci);
                 }
+        }
+    }
+
+    private void OnDisable ()
+    {
+        for (int i = 0; i < matricesBuffers.Length; i++)
+        {
+            matricesBuffers[i].Release();
+        }
+        parts = null;
+        matrices = null;
+        matricesBuffers = null;
+    }
+
+    private void OnValidate()
+    {
+        if (parts != null)
+        {
+            OnDisable();
+            OnEnable();
         }
     }
 
@@ -95,6 +119,11 @@ public class Fractal : MonoBehaviour
                 levelParts[fpi] = part;
                 levelMatrices[fpi] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
             }
+        }
+
+        for (int i = 0; i < matricesBuffers.Length; i++)
+        {
+            matricesBuffers[i].SetData(matrices[i]);
         }
     }
 }
