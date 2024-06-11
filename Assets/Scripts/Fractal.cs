@@ -36,6 +36,8 @@ public class Fractal : MonoBehaviour
     Matrix4x4[][] matrices;
     ComputeBuffer[] matricesBuffers;
 
+    static readonly int matricesId = Shader.PropertyToID("_Matrices");
+
     private void OnEnable()
     {
         parts = new FractalPart[depth][];
@@ -90,10 +92,10 @@ public class Fractal : MonoBehaviour
 
     public void Update()
     {
-        float spingAngleDelta = 22.5f * Time.deltaTime;
+        float spinAngleDelta = 22.5f * Time.deltaTime;
 
         FractalPart rootPart = parts[0][0];
-        rootPart.spinAngle += spingAngleDelta;
+        rootPart.spinAngle += spinAngleDelta;
         rootPart.worldRotation = rootPart.rotation * Quaternion.Euler(0f, rootPart.spinAngle, 0f);
         parts[0][0] = rootPart;
         matrices[0][0] = Matrix4x4.TRS(rootPart.worldPosition, rootPart.worldRotation, Vector3.one);
@@ -109,21 +111,25 @@ public class Fractal : MonoBehaviour
             {
                 FractalPart parent = levelParts[fpi / 5];
                 FractalPart part = levelParts[fpi];
-                part.spinAngle += spingAngleDelta;
+                part.spinAngle += spinAngleDelta;
                 part.worldRotation = 
                     parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
                 part.worldPosition =
                     parent.worldPosition +
                     parent.worldRotation *
-                    (1.5f *scale * part.direction);
+                    (1.5f * scale * part.direction);
                 levelParts[fpi] = part;
                 levelMatrices[fpi] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
             }
         }
 
+        var bounds = new Bounds(Vector3.zero, 3f * Vector3.one);
         for (int i = 0; i < matricesBuffers.Length; i++)
         {
-            matricesBuffers[i].SetData(matrices[i]);
+            ComputeBuffer buffer = matricesBuffers[i];
+            buffer.SetData(matrices[i]);
+            material.SetBuffer(matricesId, buffer);
+            Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count);
         }
     }
 }
