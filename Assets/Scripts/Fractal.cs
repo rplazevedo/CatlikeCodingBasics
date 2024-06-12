@@ -109,11 +109,12 @@ public class Fractal : MonoBehaviour
             Matrix4x4[] levelMatrices = matrices[li];
             for (int fpi = 0; fpi < levelParts.Length; fpi++)
             {
-                FractalPart parent = levelParts[fpi / 5];
+                FractalPart parent = parentParts[fpi / 5];
                 FractalPart part = levelParts[fpi];
                 part.spinAngle += spinAngleDelta;
                 part.worldRotation = 
                     parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
+
                 part.worldPosition =
                     parent.worldPosition +
                     parent.worldRotation *
