@@ -1,9 +1,6 @@
 
-using System.Xml.Serialization;
-using UnityEditor;
-using UnityEditor.ShaderGraph.Internal;
+using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Fractal : MonoBehaviour
 {
@@ -37,6 +34,7 @@ public class Fractal : MonoBehaviour
     ComputeBuffer[] matricesBuffers;
 
     static readonly int matricesId = Shader.PropertyToID("_Matrices");
+    static MaterialPropertyBlock propertyBlock;
 
     private void OnEnable()
     {
@@ -61,6 +59,8 @@ public class Fractal : MonoBehaviour
                     levelParts[fpi + ci] = CreatePart(ci);
                 }
         }
+
+        propertyBlock ??= new MaterialPropertyBlock();   
     }
 
     private void OnDisable ()
@@ -76,7 +76,7 @@ public class Fractal : MonoBehaviour
 
     private void OnValidate()
     {
-        if (parts != null)
+        if (parts != null && enabled)
         {
             OnDisable();
             OnEnable();
@@ -116,21 +116,24 @@ public class Fractal : MonoBehaviour
                     parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
 
                 part.worldPosition =
-                    parent.worldPosition +
+                    parent.worldPosition + 
                     parent.worldRotation *
                     (1.5f * scale * part.direction);
                 levelParts[fpi] = part;
                 levelMatrices[fpi] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
+                
             }
+
         }
 
         var bounds = new Bounds(Vector3.zero, 3f * Vector3.one);
+
         for (int i = 0; i < matricesBuffers.Length; i++)
         {
             ComputeBuffer buffer = matricesBuffers[i];
             buffer.SetData(matrices[i]);
-            material.SetBuffer(matricesId, buffer);
-            Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count);
+            propertyBlock.SetBuffer(matricesId, buffer);
+            Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count, propertyBlock);
         }
     }
 }
