@@ -96,11 +96,17 @@ public class Fractal : MonoBehaviour
 
         FractalPart rootPart = parts[0][0];
         rootPart.spinAngle += spinAngleDelta;
-        rootPart.worldRotation = rootPart.rotation * Quaternion.Euler(0f, rootPart.spinAngle, 0f);
+        rootPart.worldRotation = 
+            transform.rotation * (
+            rootPart.rotation * Quaternion.Euler(0f, rootPart.spinAngle, 0f)
+            );
+        rootPart.worldPosition = transform.position;
         parts[0][0] = rootPart;
+
+        float objectScale = transform.lossyScale.x;
         matrices[0][0] = Matrix4x4.TRS(rootPart.worldPosition, rootPart.worldRotation, Vector3.one);
 
-        float scale = 1f;
+        float scale = objectScale;
         for (int li = 1; li < parts.Length; li++)
         {
             scale *= 0.5f;
@@ -121,12 +127,10 @@ public class Fractal : MonoBehaviour
                     (1.5f * scale * part.direction);
                 levelParts[fpi] = part;
                 levelMatrices[fpi] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
-                
             }
-
         }
 
-        var bounds = new Bounds(Vector3.zero, 3f * Vector3.one);
+        var bounds = new Bounds(rootPart.worldPosition, 3f * objectScale * Vector3.one);
 
         for (int i = 0; i < matricesBuffers.Length; i++)
         {
