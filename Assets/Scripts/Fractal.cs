@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Fractal : MonoBehaviour
 {
+    struct UpdateFractalLevelJob : IJobFor { }
+
     [SerializeField, Range(1, 8)] int depth = 4;
     [SerializeField] Mesh mesh;
     [SerializeField] Material material;
