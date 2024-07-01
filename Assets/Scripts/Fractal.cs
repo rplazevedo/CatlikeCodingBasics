@@ -6,7 +6,35 @@ using UnityEngine;
 
 public class Fractal : MonoBehaviour
 {
-    struct UpdateFractalLevelJob : IJobFor { }
+    struct UpdateFractalLevelJob : IJobFor
+    {
+        public float spinAngleDelta;
+        public float scale;
+
+        [ReadOnly]
+        public NativeArray<FractalPart> parents;
+
+        public NativeArray<FractalPart> parts;
+
+        [WriteOnly]
+        public NativeArray<Matrix4x4> matrices;
+
+        public void Execute(int i)
+        {
+            FractalPart parent = parents[i / 5];
+            FractalPart part = parts[i];
+            part.spinAngle += spinAngleDelta;
+            part.worldRotation =
+                parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
+
+            part.worldPosition =
+                parent.worldPosition +
+                parent.worldRotation *
+                (1.5f * scale * part.direction);
+            parts[i] = part;
+            matrices[i] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
+        }
+    }
 
     [SerializeField, Range(1, 8)] int depth = 4;
     [SerializeField] Mesh mesh;
@@ -116,23 +144,18 @@ public class Fractal : MonoBehaviour
         for (int li = 1; li < parts.Length; li++)
         {
             scale *= 0.5f;
-            NativeArray<FractalPart> parentParts = parts[li - 1];
-            NativeArray<FractalPart> levelParts = parts[li];
-            NativeArray<Matrix4x4> levelMatrices = matrices[li];
-            for (int fpi = 0; fpi < levelParts.Length; fpi++)
+            var job = new UpdateFractalLevelJob
             {
-                FractalPart parent = parentParts[fpi / 5];
-                FractalPart part = levelParts[fpi];
-                part.spinAngle += spinAngleDelta;
-                part.worldRotation = 
-                    parent.worldRotation * (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));
-
-                part.worldPosition =
-                    parent.worldPosition + 
-                    parent.worldRotation *
-                    (1.5f * scale * part.direction);
-                levelParts[fpi] = part;
-                levelMatrices[fpi] = Matrix4x4.TRS(part.worldPosition, part.worldRotation, scale * Vector3.one);
+                spinAngleDelta = spinAngleDelta,
+                scale = scale,
+                parents = parts[li-1],
+                parts = parts[li],
+                matrices = matrices[li]
+            };
+            
+            for (int fpi = 0; fpi < parts[li].Length; fpi++)
+            {
+                job.Execute(fpi);
             }
         }
 
