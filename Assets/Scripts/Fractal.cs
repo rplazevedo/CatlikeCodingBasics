@@ -154,11 +154,6 @@ public class Fractal : MonoBehaviour
             };
 
             job.Schedule(parts[li].Length, default).Complete();
-
-            for (int fpi = 0; fpi < parts[li].Length; fpi++)
-            {
-                job.Execute(fpi);
-            }
         }
 
         var bounds = new Bounds(rootPart.worldPosition, 3f * objectScale * Vector3.one);
