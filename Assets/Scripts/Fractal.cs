@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Fractal : MonoBehaviour
 {
-    [BurstCompile]
+    [BurstCompile(CompileSynchronously = true)]
     struct UpdateFractalLevelJob : IJobFor
     {
         public float spinAngleDelta;
