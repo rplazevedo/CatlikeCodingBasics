@@ -152,7 +152,9 @@ public class Fractal : MonoBehaviour
                 parts = parts[li],
                 matrices = matrices[li]
             };
-            
+
+            job.Schedule(parts[li].Length, default).Complete();
+
             for (int fpi = 0; fpi < parts[li].Length; fpi++)
             {
                 job.Execute(fpi);
