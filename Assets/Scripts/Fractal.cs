@@ -6,12 +6,11 @@ using Unity.Mathematics;
 using UnityEngine;
 
 using static Unity.Mathematics.math;
-using float4x4 = Unity.Mathematics.float4x4;
 using quaternion = Unity.Mathematics.quaternion;
 
 public class Fractal : MonoBehaviour
 {
-    [BurstCompile(CompileSynchronously = true)]
+    [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
     struct UpdateFractalLevelJob : IJobFor
     {
         public float spinAngleDelta;
@@ -23,7 +22,7 @@ public class Fractal : MonoBehaviour
         public NativeArray<FractalPart> parts;
 
         [WriteOnly]
-        public NativeArray<float4x4> matrices;
+        public NativeArray<float3x4> matrices;
 
         public void Execute(int i)
         {
@@ -46,7 +45,8 @@ public class Fractal : MonoBehaviour
                     1.5f * scale * part.direction
                     );
             parts[i] = part;
-            matrices[i] = float4x4.TRS(part.worldPosition, part.worldRotation, float3(scale));
+            float3x3 r = float3x3(part.worldRotation) * scale;
+            matrices[i] = float3x4(r.c0, r.c1, r.c2, part.worldPosition);
         }
     }
 
@@ -78,7 +78,7 @@ public class Fractal : MonoBehaviour
     }
 
     NativeArray<FractalPart>[] parts;
-    NativeArray<float4x4>[] matrices;
+    NativeArray<float3x4>[] matrices;
     ComputeBuffer[] matricesBuffers;
 
     static readonly int matricesId = Shader.PropertyToID("_Matrices");
@@ -87,13 +87,13 @@ public class Fractal : MonoBehaviour
     private void OnEnable()
     {
         parts = new NativeArray<FractalPart>[depth];
-        matrices = new NativeArray<float4x4>[depth];
+        matrices = new NativeArray<float3x4>[depth];
         matricesBuffers = new ComputeBuffer[depth];
-        int stride = 16 * 4;
+        int stride = 12 * 4;
         for (int i = 0, length = 1; i < parts.Length; i++, length *= 5) 
         {
             parts[i] = new NativeArray<FractalPart>(length, Allocator.Persistent);
-            matrices[i] = new NativeArray<float4x4>(length, Allocator.Persistent);
+            matrices[i] = new NativeArray<float3x4>(length, Allocator.Persistent);
             matricesBuffers[i] = new ComputeBuffer(length, stride);
         }
 
@@ -158,7 +158,8 @@ public class Fractal : MonoBehaviour
         parts[0][0] = rootPart;
 
         float objectScale = transform.lossyScale.x;
-        matrices[0][0] = float4x4.TRS(rootPart.worldPosition, rootPart.worldRotation, float3(objectScale))
+        float3x3 r = float3x3(rootPart.worldRotation) * objectScale;
+        matrices[0][0] = float3x4(r.c0, r.c1, r.c2, rootPart.worldPosition);
             ;
 
         float scale = objectScale;
@@ -174,7 +175,7 @@ public class Fractal : MonoBehaviour
                 parents = parts[li-1],
                 parts = parts[li],
                 matrices = matrices[li]
-            }.Schedule(parts[li].Length, jobHandle);;
+            }.ScheduleParallel(parts[li].Length, 5, jobHandle);;
 
         }
         jobHandle.Complete();
