@@ -53,6 +53,7 @@ public class Fractal : MonoBehaviour
     [SerializeField, Range(1, 8)] int depth = 4;
     [SerializeField] Mesh mesh;
     [SerializeField] Material material;
+    [SerializeField] Gradient gradient;
 
     static float3[] directions =
     {
@@ -190,11 +191,7 @@ public class Fractal : MonoBehaviour
             buffer.SetData(matrices[i]);
             propertyBlock.SetColor(
                 baseColorId, 
-                Color.Lerp(
-                    Color.magenta,
-                    Color.cyan,
-                    i / (matricesBuffers.Length - 1f)
-                    )
+                gradient.Evaluate(i / (matricesBuffers.Length - 1f))
                 );
             propertyBlock.SetBuffer(matricesId, buffer);
             Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count, propertyBlock);
