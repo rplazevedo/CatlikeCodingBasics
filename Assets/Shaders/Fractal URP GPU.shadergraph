@@ -131,7 +131,7 @@
     "m_FragmentContext": {
         "m_Position": {
             "x": 287.0,
-            "y": 199.0
+            "y": 197.0
         },
         "m_Blocks": [
             {
@@ -193,7 +193,7 @@
         "HLSL"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": true,
+    "m_PreviewExpanded": false,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -544,7 +544,7 @@
     "m_DefaultRefNameVersion": 1,
     "m_RefNameGeneratedByDisplayName": "Base Color",
     "m_DefaultReferenceName": "_Base_Color",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_BaseColor",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
