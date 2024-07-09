@@ -14,12 +14,21 @@ void ConfigureProcedural()
 #endif
 }
 
-void ShaderGraphFunction_float(float3 In, out float3 Out)
+float4 _BaseColor;
+
+float4 GetFractalColor()
 {
-    Out = In;
+    return _BaseColor;
 }
 
-void ShaderGraphFunction_half(half3 In, out half3 Out)
+void ShaderGraphFunction_float(float3 In, out float3 Out, out float4 FractalColor)
 {
     Out = In;
+    FractalColor = GetFractalColor();
+}
+
+void ShaderGraphFunction_half(half3 In, out half3 Out, out float4 FractalColor)
+{
+    Out = In;
+    FractalColor = GetFractalColor();
 }
