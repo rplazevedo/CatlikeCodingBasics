@@ -11,14 +11,18 @@ void ConfigureProcedural()
 		unity_ObjectToWorld._m20_m21_m22_m23 = m._m20_m21_m22_m23;
 		unity_ObjectToWorld._m30_m31_m32_m33 = float4(0.0, 0.0, 0.0, 1.0);
 	
-#endif
+	#endif
 }
 
 float4 _BaseColor;
 
 float4 GetFractalColor()
 {
-    return _BaseColor;
+	#if defined(UNITY_PROCEDURAL_INSTANCING_ENABLED)
+		return (unity_InstanceID % 10.0) / 9.0;
+	#else
+		return _BaseColor;
+	#endif
 }
 
 void ShaderGraphFunction_float(float3 In, out float3 Out, out float4 FractalColor)
