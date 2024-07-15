@@ -51,10 +51,11 @@ public class Fractal : MonoBehaviour
         }
     }
 
-    [SerializeField, Range(1, 8)] int depth = 4;
-    [SerializeField] Mesh mesh;
+    [SerializeField, Range(3, 9)] int depth = 4;
+    [SerializeField] Mesh mesh, leafMesh;
     [SerializeField] Material material;
-    [SerializeField] Gradient gradient;
+    [SerializeField] Gradient gradientA, gradientB;
+    [SerializeField] Color leafColorA, leafColorB;
 
     static float3[] directions =
     {
@@ -84,7 +85,8 @@ public class Fractal : MonoBehaviour
     ComputeBuffer[] matricesBuffers;
 
     static readonly int matricesId = Shader.PropertyToID("_Matrices");
-    static readonly int baseColorId = Shader.PropertyToID("_BaseColor");
+    static readonly int colorAId = Shader.PropertyToID("_ColorA");
+    static readonly int colorBId = Shader.PropertyToID("_ColorB");
     static readonly int sequenceNumbersId = Shader.PropertyToID("_SequenceNumbers");
 
     static MaterialPropertyBlock propertyBlock;
@@ -192,17 +194,32 @@ public class Fractal : MonoBehaviour
 
         var bounds = new Bounds(rootPart.worldPosition, 3f * objectScale * Vector3.one);
 
+        int leafIndex = matricesBuffers.Length - 1;
         for (int i = 0; i < matricesBuffers.Length; i++)
         {
             ComputeBuffer buffer = matricesBuffers[i];
             buffer.SetData(matrices[i]);
-            propertyBlock.SetColor(
-                baseColorId, 
-                gradient.Evaluate(i / (matricesBuffers.Length - 1f))
-                );
+            Color colorA, colorB;
+            Mesh instanceMesh;
+            if (i == leafIndex)
+            {
+                colorA = leafColorA;
+                colorB = leafColorB;
+                instanceMesh = leafMesh;
+            }
+            else
+            {
+                float gradientInterpolator = i / (matricesBuffers.Length - 2f);
+                colorA = gradientA.Evaluate(gradientInterpolator);
+                colorB = gradientB.Evaluate(gradientInterpolator);
+                instanceMesh = mesh;
+            }
+
+            propertyBlock.SetColor(colorAId, colorA);
+            propertyBlock.SetColor(colorBId, colorB);
             propertyBlock.SetBuffer(matricesId, buffer);
             propertyBlock.SetVector(sequenceNumbersId, sequenceNumbers[i]);
-            Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count, propertyBlock);
+            Graphics.DrawMeshInstancedProcedural(instanceMesh, 0, material, bounds, buffer.count, propertyBlock);
         }
     }
 }
