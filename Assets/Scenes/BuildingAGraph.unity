@@ -1004,8 +1004,8 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 0c9212f6f139d7b4682278f6307a415d, type: 2}
   gradientA:
     serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 0, b: 0, a: 1}
+    key0: {r: 0.6037736, g: 0, b: 0, a: 0.30588236}
+    key1: {r: 0, g: 0, b: 0, a: 0.35686275}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1013,8 +1013,8 @@ MonoBehaviour:
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 33248
-    ctime2: 65535
+    ctime1: 65535
+    ctime2: 0
     ctime3: 0
     ctime4: 0
     ctime5: 0
@@ -1030,21 +1030,21 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_ColorSpace: -1
-    m_NumColorKeys: 3
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   gradientB:
     serializedVersion: 2
-    key0: {r: 0, g: 0.02520442, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 1, g: 0.9675422, b: 0, a: 0}
+    key0: {r: 0.7075472, g: 0.29321775, b: 0, a: 0.5254902}
+    key1: {r: 0.93350255, g: 1, b: 0, a: 0.6627451}
+    key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 577
-    ctime1: 33825
-    ctime2: 65535
+    ctime1: 65535
+    ctime2: 0
     ctime3: 0
     ctime4: 0
     ctime5: 0
@@ -1060,10 +1060,10 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_ColorSpace: -1
-    m_NumColorKeys: 3
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  leafColorA: {r: 0.3835547, g: 1, b: 0, a: 0}
-  leafColorB: {r: 0, g: 0.4245283, b: 0.051123105, a: 0}
+  leafColorA: {r: 0.3835547, g: 1, b: 0, a: 0.48235294}
+  leafColorB: {r: 0.38972688, g: 0, b: 0.6784314, a: 0.90588236}
 --- !u!4 &1799323028
 Transform:
   m_ObjectHideFlags: 0

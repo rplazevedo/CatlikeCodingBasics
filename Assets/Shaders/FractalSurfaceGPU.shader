@@ -1,9 +1,4 @@
 Shader "Graph/FractalSurfaceGPU" {
-
-	Properties {
-		_Smoothness ("Smoothness", Range(0,1) ) = 0.5	
-	}
-
 	SubShader {
 		CGPROGRAM
 		#pragma surface ConfigureSurface Standard fullforwardshadows addshadow
@@ -20,7 +15,7 @@ Shader "Graph/FractalSurfaceGPU" {
 		float _Smoothness;
 
 		void ConfigureSurface (Input input, inout SurfaceOutputStandard surface) {
-			surface.Smoothness = _Smoothness;
+			surface.Smoothness = GetFractalColor().a;
 			surface.Albedo = GetFractalColor().rgb;
 			}
 
