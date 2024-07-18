@@ -33,10 +33,19 @@ public class Fractal : MonoBehaviour
 
             float3 upAxis = mul(mul(parent.worldRotation, part.rotation), up());
             float3 sagAxis = cross(up(), upAxis);
-            sagAxis = normalize(sagAxis);
 
-            quaternion sagRotation = quaternion.AxisAngle(sagAxis, PI * 0.245f);
-            quaternion baseRotation = mul(sagRotation, parent.worldRotation);
+            float sagMagnitude = length(sagAxis);
+            quaternion baseRotation;
+            if (sagMagnitude > 0f)
+            {
+                sagAxis /= sagMagnitude;
+                quaternion sagRotation = quaternion.AxisAngle(sagAxis, PI * 0.245f);
+                baseRotation = mul(sagRotation, parent.worldRotation);
+            }
+            else
+            {
+                baseRotation = parent.worldRotation;
+            }
 
             part.worldRotation =
                 mul(
@@ -50,9 +59,10 @@ public class Fractal : MonoBehaviour
             part.worldPosition =
                 parent.worldPosition +
                 mul(
-                    parent.worldRotation,
-                    1.5f * scale * part.direction
+                    part.worldRotation,
+                    float3(0f, 1.5f * scale, 0f)
                     );
+
             parts[i] = part;
             float3x3 r = float3x3(part.worldRotation) * scale;
             matrices[i] = float3x4(r.c0, r.c1, r.c2, part.worldPosition);
@@ -65,10 +75,7 @@ public class Fractal : MonoBehaviour
     [SerializeField] Gradient gradientA, gradientB;
     [SerializeField] Color leafColorA, leafColorB;
 
-    static float3[] directions =
-    {
-        up(), right(), left(), forward(), back()
-    };
+
 
     static quaternion[] rotations =
     {
@@ -81,9 +88,8 @@ public class Fractal : MonoBehaviour
 
     struct FractalPart
     {
-        public float3 direction;
-        public quaternion rotation;
         public float3 worldPosition;
+        public quaternion rotation;
         public quaternion worldRotation;
         public float spinAngle;
     }
@@ -156,7 +162,6 @@ public class Fractal : MonoBehaviour
     FractalPart CreatePart(int childIndex) =>
         new()
         {
-            direction = directions[childIndex],
             rotation = rotations[childIndex],
         };
 
