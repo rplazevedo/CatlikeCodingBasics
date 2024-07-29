@@ -14,7 +14,7 @@ public class Fractal : MonoBehaviour
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
     struct UpdateFractalLevelJob : IJobFor
     {
-        public float spinAngleDelta;
+        public float deltaTime;
         public float scale;
 
         [ReadOnly]
@@ -29,7 +29,7 @@ public class Fractal : MonoBehaviour
         {
             FractalPart parent = parents[i / 5];
             FractalPart part = parts[i];
-            part.spinAngle += spinAngleDelta;
+            part.spinAngle += part.spinVelocity * deltaTime;
 
             float3 upAxis = mul(mul(parent.worldRotation, part.rotation), up());
             float3 sagAxis = cross(up(), upAxis);
@@ -75,6 +75,8 @@ public class Fractal : MonoBehaviour
     [SerializeField] Gradient gradientA, gradientB;
     [SerializeField] Color leafColorA, leafColorB;
     [SerializeField, Range(0f, 90f)] float maxSagAngleA = 15f, maxSagAngleB = 25f;
+    [SerializeField, Range(0f, 90f)] float spinSpeedA = 20f, spinSpeedB = 25f;
+    [SerializeField, Range(0f, 1f)] float reverseSpinChance = 0.25f;
 
 
 
@@ -94,6 +96,7 @@ public class Fractal : MonoBehaviour
         public quaternion worldRotation;
         public float spinAngle;
         public float maxSagAngle;
+        public float spinVelocity;
     }
 
     NativeArray<FractalPart>[] parts;
@@ -166,14 +169,18 @@ public class Fractal : MonoBehaviour
         {
             rotation = rotations[childIndex],
             maxSagAngle = radians(Random.Range(maxSagAngleA, maxSagAngleB)),
+            spinVelocity = 
+                (Random.value < reverseSpinChance ? -1f : 1f) *
+                radians(Random.Range(spinSpeedA, spinSpeedB)),
         };
 
     public void Update()
     {
-        float spinAngleDelta = 0.125f * PI * Time.deltaTime;
+        float deltaTime = Time.deltaTime;
+
 
         FractalPart rootPart = parts[0][0];
-        rootPart.spinAngle += spinAngleDelta;
+        rootPart.spinAngle += rootPart.spinVelocity * deltaTime;
         rootPart.worldRotation = 
             mul(
                 transform.rotation,
@@ -198,7 +205,7 @@ public class Fractal : MonoBehaviour
             scale *= 0.5f;
             jobHandle = new UpdateFractalLevelJob
             {
-                spinAngleDelta = spinAngleDelta,
+                deltaTime = deltaTime,
                 scale = scale,
                 parents = parts[li-1],
                 parts = parts[li],
